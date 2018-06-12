@@ -69,5 +69,5 @@ figure(112);
 imagesc(reshape(r, [n1, n2]))
 colorbar()
 
-print('-deps', 'rate_2dim.eps')
+print('-depsc2', 'rate_2dim.eps')
 
