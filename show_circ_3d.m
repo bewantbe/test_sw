@@ -2,7 +2,7 @@
 
 [gx1, gx2, gx3] = ndgrid(1:n1, 1:n2, 1:n3);
 
-rate = 1000 ./ ISI;
+rate = 1000 ./ ISI(1:pm.nI);
 rate = reshape(rate, size(gx1));
 
 switch 5
