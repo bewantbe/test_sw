@@ -90,7 +90,9 @@ switch 5
     lighting gouraud  % gouraud phong
     camproj('perspective')
     
-    set(h2,'Position',[0.2 0.05 0.72 0.5])
+    if exist('h2', 'var')
+      set(h2,'Position',[0.2 0.05 0.72 0.5])
+    end
     print('-dpng', 'pic_tmp/view-3d-v2.png')
 
   case 6
