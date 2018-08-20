@@ -4,12 +4,12 @@ heaviside = @(x) (sign(x)+1)/2;
 N = 400;
 K = 40;
 
-%W_line = circshift([ones(1,K+1), zeros(1,N-K-1)], -floor(K/2));
-%W_line(1) = 0;
-%W = toeplitz(W_line);
-load('sw_2dim.mat')
+W_line = circshift([ones(1,K+1), zeros(1,N-K-1)], [0, -floor(K/2)]);
+W_line(1) = 0;
+W = toeplitz(W_line);
+%load('sw_2dim.mat')
 
-N = 10000;
+%N = 10000;
 J = -0.16;
 
 I0 = 100;
@@ -27,7 +27,7 @@ T = n_dt * dt;
 r = rand(N,1);
 I_noise = zeros(N,1);
 %rec_r = zeros(N, n_dt);
-
+return
 tid=tic;
 for id_dt = 1:n_dt
 %  xi = I_xi * sqrt(r) / sqrt(dt) .* randn(N,1);
