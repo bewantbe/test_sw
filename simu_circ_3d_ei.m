@@ -11,7 +11,7 @@ n3 = data_sw.n3;
 pm = [];
 pm.neuron_model = 'IF-jump';
 pm.simu_method = 'auto';
-pm.net  = [W,W;W,W];
+pm.net  = SmallWorldRewire([W,W;W,W]);
 pm.nI   = length(W);
 
 pm.scee_mV = 0.5;
@@ -29,4 +29,10 @@ pm.extra_cmd = '-v --verbose-echo --t-warming-up 1000';
 
 [~, ISI, ras] = gen_neu(pm, '');
 
+% Save firing rate
+t_len = 400;
+rr = ras(ras(:,2)>t_after, 1);
+cnt = histc(rr, 1:length(pm.net))/(t_len/1000);
+pm0 = rmfield(pm, 'net');
+save('ISI_sw_3d_ei.mat', 'ISI', 'cnt', 'n1', 'n2', 'n3', 'pm0')
 

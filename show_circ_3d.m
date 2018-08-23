@@ -1,10 +1,19 @@
 %
 
+load('ISI_sw_3d_ei.mat')
+pm = pm0;
+
 [gx1, gx2, gx3] = ndgrid(1:n1, 1:n2, 1:n3);
 
-rate = 1000 ./ ISI(1:pm.nI);
+if exist('cnt', 'var')
+  rate = cnt(1:pm.nI);
+else
+  rate = 1000 ./ ISI(1:pm.nI);
+end
 rate = reshape(rate, size(gx1));
 
+rate = circshift(rate, [0 4 2]);
+cla
 switch 5
   case 0
     figure(12)
@@ -57,7 +66,7 @@ switch 5
     gx2  = permute(gx2, [2,1,3]) / n2;
     gx3  = gx3 / n3;
     rate = permute(rate, [2,1,3]);
-    val = 7;
+    val = 10;
     p = patch(isosurface(gx1, gx2, gx3, rate, val));
     isonormals(gx1, gx2, gx3, rate, p)
     
@@ -66,9 +75,10 @@ switch 5
     view_normal = -[sin(az/180*pi)*cos(el/180*pi); -cos(az/180*pi)*cos(el/180*pi); sin(el/180*pi)];
     depth = p.Vertices * view_normal;
     depth = (depth - min(depth)) / (max(depth)-min(depth));
+    fhue = @(x) interp1([0 0.5 1], [0.6 0.667 0.7], x);
     fsat = @(x) interp1([0 0.5 1], [1 1 0], x);
     fval = @(x) interp1([0 0.5 1], [1 1 0], x);
-    hsvc = [2/3*ones(size(p.Vertices,1),1), fsat(depth), fval(depth)];
+    hsvc = [fhue(depth), fsat(depth), fval(depth)];
     
     p.FaceVertexCData = hsv2rgb(hsvc);
     p.FaceColor = 'interp'; % [0 0 1];
@@ -87,13 +97,15 @@ switch 5
     set(gca,'Fontname','Arial','Fontsize',12)
     
     camlight
+    camlight
     lighting gouraud  % gouraud phong
     camproj('perspective')
     
     if exist('h2', 'var')
-      set(h2,'Position',[0.2 0.05 0.72 0.5])
+      set(h2,'Position', [0.22 0.05 0.62 0.5])
     end
     print('-dpng', 'pic_tmp/view-3d-v2.png')
+    print('-depsc2', 'pic_tmp/view-3d-v2.eps', '-r600')
 
   case 6
     gx1  = permute(gx1, [2,1,3]);
