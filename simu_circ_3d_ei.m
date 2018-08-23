@@ -11,7 +11,7 @@ n3 = data_sw.n3;
 pm = [];
 pm.neuron_model = 'IF-jump';
 pm.simu_method = 'auto';
-pm.net  = SmallWorldRewire([W,W;W,W]);
+fprintf('rewiring...'); tic; pm.net  = SmallWorldProbRewire([W,W;W,W]); toc; disp('done');
 pm.nI   = length(W);
 
 pm.scee_mV = 0.5;
