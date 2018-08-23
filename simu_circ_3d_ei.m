@@ -33,7 +33,7 @@ pm.extra_cmd = '-v --verbose-echo --t-warming-up 1000';
 
 % Save firing rate
 t_len = 400;
-rr = ras(ras(:,2)>t_after, 1);
+rr = ras(ras(:,2)>=pm.t-t_len, 1);
 cnt = histc(rr, 1:length(pm.net))/(t_len/1000);
 pm0 = rmfield(pm, 'net');
 save('ISI_sw_3d_ei.mat', 'ISI', 'cnt', 'n1', 'n2', 'n3', 'pm0')

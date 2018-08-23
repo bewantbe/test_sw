@@ -89,6 +89,7 @@ switch 5
     p.FaceVertexAlphaData = ftrans(sqrt(sum((p.Vertices - [1 1 1]/2).^2,2)));
     p.FaceAlpha = 'interp';  % 0.7
     
+    view([-37.5 30])
     daspect([1 1 1]);
     axis([0 1 0 1 0 1])
     xlabel('x')
