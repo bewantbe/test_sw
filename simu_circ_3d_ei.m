@@ -27,7 +27,7 @@ pm.t    = 1e3;
 pm.stv  = 10;
 pm.dt   = pm.stv;
 pm.seed = 'auto';
-pm.extra_cmd = '-v --verbose-echo --t-warming-up 1000';
+pm.extra_cmd = '-v --verbose-echo --t-warming-up 2000';
 
 [~, ISI, ras] = gen_neu(pm, '');
 
