@@ -17,7 +17,15 @@ K = round2(0.25 * N);
 W_line = circshift([ones(1,K+1), zeros(1,N-K-1)], [0, -floor(K/2)]);
 W_line(1) = 0;
 
-W = toeplitz(W_line) / N;
+W = N * toeplitz(W_line) / N;
+
+%idw = true(1,281);
+%idw(1:151) = false;
+%w4 = w3(idw, idw);
+%W = 1*((w4 + w4') > 0);
+%N = length(W);
+%K = mean(sum(W,2));
+
 figure(1);
 imagesc(W);
 colorbar
@@ -27,26 +35,39 @@ colorbar
 % Parameters
 NI = N;
 JI = 20/K;
-fv = 20.0;
+fv = 20.0e-1;
+%fv = 19.0;
+fv = 20;
 tau = 1.0;
+
+W = -JI * W;
 
 % note: Q(x) = - JI * NI * WII(x)
 WII = W_line' / N;
 Q   = -JI * NI * WII;
 
 figure(1234719)
-ffteig = real(fft(Q));
-plot(ffteig, '-o');
-ylim([-1 1]*max(ffteig));
-xlim([0 30])
+%ffteig = real(fft(Q));
+%plot(ffteig, '-o');
+%ylim([-1 1]*max(ffteig));
+%xlim([0 30])
+[evec, evalue] = eig(W);
+evalue = diag(evalue);
+[~, idev] = max(real(evalue));
+plot(real(evalue), '-o')
 
-% Iteration
-delta_t = 0.01;
-n_iter = 20 / delta_t;
+figure(1234721)
+plot(evec(:, idev));
+title(sprintf('%.3e', evalue(idev)));
+
+% parameters for simulation
+delta_t = 0.1;
+n_iter = 200 / delta_t;
 mu = zeros(N, n_iter);
 r  = zeros(N, n_iter);
 
-switch 4
+% select inital value
+switch 1
   case 1
     rand('state', 2134')
     r(:, 1) = 0.3*rand(N, 1) + 1.0;
@@ -57,30 +78,35 @@ switch 4
     am_guess = 3.7;
     r(:, 1) = am_guess * relu(sin(2*pi*fq_guess*(0:NI-1)/NI));
   case 4
-    fq_guess = 14;
-    am_guess = 3.7;
-    r(:, 1) = 0.1 * sin(2*pi*fq_guess*(0:NI-1)/NI) + 1;
+    %fq_guess = 14;
+    fq_guess = 6;
+    mean_guess = fv / (1 - sum(Q));
+    r(:, 1) = 0.1 * sin(2*pi*fq_guess*(0:NI-1)/NI) + mean_guess;
 end
 
+% Iteration
 gainexp = 1.0;
 for j = 1 : n_iter - 1
-  mu(:,j)  = circconv(Q, r(:,j)) + fv;
+  %mu(:,j)  = circconv(Q, r(:,j)) + fv;
+  mu(:,j)  = W * r(:,j) + fv;
   r(:,j+1) = r(:,j) + delta_t/tau * (-r(:,j) + relu(mu(:,j)).^gainexp);
+  %r(:,j+1) = r(:,j) + delta_t/tau * (-r(:,j) + (mu(:,j)).^gainexp);
 end
-mu(:,end)  = circconv(Q, r(:,end)) + fv;
+mu(:,end)  = W * r(:,end) + fv;
+%mu(:,end)  = circconv(Q, r(:,end)) + fv;
 
 r_end = r(:, end);
 
 figure(122);
 imagesc(r);
 colormap(inferno());
-h=colorbar
+h=colorbar;
 ylabel(h, 'r')
 
 figure(123);
 imagesc(mu);
 colormap(inferno());
-h=colorbar
+h=colorbar;
 ylabel(h, 'mu');
 
 figure(124);
@@ -98,6 +124,17 @@ plot(min(mu));
 ylabel('min mu');
 xlabel('t');
 
+figure(21341);
+plot(evec(:,idev), r(:,end), '.');
+
+plotcus1 = @(x,y) plot(x, y, '-o');
+
+figure(21342);
+idr = 1:length(W);
+[ax, h1, h2] = plotyy(idr,  -evec(:, idev), idr, r(:, end), plotcus1);
+ylim(ax(1), [0, 0.3])
+
+return
 x = (0:NI-1)/NI;
 figure(12341);
 for j = 1 : n_iter
@@ -106,4 +143,6 @@ for j = 1 : n_iter
   ylabel('r, mu');
   print('-dpng', sprintf('pic_act/activity_%0.4d.png', j));
 end
+
+
 

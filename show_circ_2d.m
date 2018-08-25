@@ -2,7 +2,9 @@
 
 addpath('/home/xyy/matcode/color_sci/');
 
-%data_sw = load('2D-SW-Allihi-J_II=0.3000-ext_f=0.6000-ext_r=20.0000-2018-06-13_11_15_27.316322-1027.mat');
+if ~exist('data_sq', 'var')
+  data_sw = load('2D-SW-Allihi-J_II=0.3000-ext_f=0.6000-ext_r=20.0000-2018-06-13_11_15_27.316322-1027.mat');
+end
 
 figy = figure('Color','white');
 set(figy,'Unit','inch')

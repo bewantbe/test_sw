@@ -12,7 +12,7 @@ else
 end
 rate = reshape(rate, size(gx1));
 
-rate = circshift(rate, [0 4 2]);
+rate = circshift(rate, [-5 0 2]);
 cla
 switch 5
   case 0
@@ -89,7 +89,8 @@ switch 5
     p.FaceVertexAlphaData = ftrans(sqrt(sum((p.Vertices - [1 1 1]/2).^2,2)));
     p.FaceAlpha = 'interp';  % 0.7
     
-    view([-37.5 30])
+    %view([-37.5 30])
+    %view([52.9 34.64])
     daspect([1 1 1]);
     axis([0 1 0 1 0 1])
     xlabel('x')
